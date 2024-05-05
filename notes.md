@@ -39,27 +39,13 @@ docker network create nginx-proxy
 ```
 
 ### Iris
-1. Clone the Iris GitHub repo
+1. Before moving forward, its suggested to modify the environment file to set an admin username/password:
 ```bash
-#  Clone the iris-web repository
-git clone https://github.com/dfir-iris/iris-web.git
-cd iris-web
-
-# Checkout to the last tagged version 
-git checkout v2.4.7
+nano .env
 ```
-2. Before moving forward, its suggested to modify the environment file to set an admin username/password:
-```bash
-nano .env.model
-```
-3. Uncomment the following lines and change the administrator name if desired. Leave the password the default and change it later from the web GUI, as the password in this file is stored in plain text:
+2. Uncomment the following lines and change the administrator name if desired. Leave the password the default and change it later from the web GUI, as the password in this file is stored in plain text:
 ```
 #IRIS_ADM_PASSWORD=MySuperAdminPassword!
 #IRIS_ADM_EMAIL=admin@localhost
 #IRIS_ADM_USERNAME=administrator
-```
-4. Rename the environment file:
-```bash
-# Copy the environment file 
-cp .env.model .env
 ```

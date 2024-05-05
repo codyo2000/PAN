@@ -1,25 +1,5 @@
-
-version: "3.8"
+version: "3.5"
 services:
-  dashy:
-    # To build from source, replace 'image: lissy93/dashy' with 'build: .'
-    # build: .
-    image: lissy93/dashy
-    container_name: Dashy
-    ports:
-      - 8080:8080
-    # Set any environmental variables
-    environment:
-      - NODE_ENV=production
-    # Specify restart policy
-    restart: unless-stopped
-    # Configure healthchecks
-    healthcheck:
-      test: ['CMD', 'node', '/app/services/healthcheck']
-      interval: 1m30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
   pihole:
     container_name: pihole
     image: pihole/pihole:latest
@@ -27,7 +7,7 @@ services:
     ports:
       - "53:53/tcp"
       - "53:53/udp"
-      #- "67:67/udp" #Only required if you are using Pi-hole as your DHCP server
+    # - "67:67/udp" # Only required if you are using Pi-hole as your DHCP server
       - "80:80/tcp"
     environment:
       TZ: 'America/Chicago'
@@ -37,6 +17,153 @@ services:
       - './etc-pihole:/etc/pihole'
       - './etc-dnsmasq.d:/etc/dnsmasq.d'
     #   https://github.com/pi-hole/docker-pi-hole#note-on-capabilities
-    #cap_add:
-      #- NET_ADMIN # Required if you are using Pi-hole as your DHCP server, else not needed
+  # cap_add:
+    # - NET_ADMIN # Required if you are using Pi-hole as your DHCP server, else not needed
     restart: unless-stopped
+
+  watchtower:
+    image: v2tec/watchtower
+    container_name: watchtower
+    volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+    restart: always
+    networks:
+      - proxy
+  rabbitmq:
+      image: rabbitmq:3-management-alpine
+      container_name: iriswebapp_rabbitmq
+      networks:
+        - iris_backend
+
+  db:
+    build:
+      context: docker/db
+    container_name: iriswebapp_db
+    image: iriswebapp_db:v2.3.7
+    restart: always
+    # Used for debugging purposes, should be deleted for production
+    ports:
+      - "127.0.0.1:5432:5432"
+    environment:
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_ADMIN_USER
+      - POSTGRES_ADMIN_PASSWORD
+      - POSTGRES_DB
+    networks:
+      - iris_backend
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  app:
+    build:
+      context: .
+      dockerfile: docker/webApp/Dockerfile
+    image: iriswebapp_app:v2.3.7
+    container_name: iriswebapp_app
+    command: ['nohup', './iris-entrypoint.sh', 'iriswebapp']
+    volumes:
+      # RootCA necessary when dealing with an auth server without a trusted CA signed certificate
+      - ./certificates/rootCA/irisRootCACert.pem:/etc/irisRootCACert.pem:ro
+      - ./certificates/:/home/iris/certificates/:ro
+      - ./certificates/ldap/:/iriswebapp/certificates/ldap/:ro
+      - iris-downloads:/home/iris/downloads
+      - user_templates:/home/iris/user_templates
+      - server_data:/home/iris/server_data
+    restart: always
+    depends_on:
+      - "rabbitmq"
+      - "db"
+    # Used for debugging purposes, should be deleted for production
+    ports:
+      - "127.0.0.1:8000:8000"
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_ADMIN_USER
+      - POSTGRES_ADMIN_PASSWORD
+      - POSTGRES_SERVER
+      - POSTGRES_PORT
+      - DOCKERIZED
+      - IRIS_SECRET_KEY
+      - IRIS_SECURITY_PASSWORD_SALT
+    networks:
+      - iris_backend
+      - iris_frontend
+
+  worker:
+    build:
+      context: .
+      dockerfile: docker/webApp/Dockerfile
+    image: iriswebapp_app:v2.3.7
+    container_name: iriswebapp_worker
+    command: ['./wait-for-iriswebapp.sh', 'app:8000', './iris-entrypoint.sh', 'iris-worker']
+    volumes:
+      - ./certificates/rootCA/irisRootCACert.pem:/etc/irisRootCACert.pem:ro
+      - ./certificates/:/home/iris/certificates/:ro
+      - ./certificates/ldap/:/iriswebapp/certificates/ldap/:ro
+      - iris-downloads:/home/iris/downloads
+      - user_templates:/home/iris/user_templates
+      - server_data:/home/iris/server_data
+    depends_on:
+      - "rabbitmq"
+      - "db"
+      - "app"
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_ADMIN_USER
+      - POSTGRES_ADMIN_PASSWORD
+      - POSTGRES_SERVER
+      - POSTGRES_PORT
+      - DOCKERIZED
+      - IRIS_SECRET_KEY
+      - IRIS_SECURITY_PASSWORD_SALT
+      - IRIS_WORKER
+    networks:
+      - iris_backend
+
+  nginx:
+    build:
+      context: ./docker/nginx
+      args:
+        NGINX_CONF_GID: 1234
+        NGINX_CONF_FILE: nginx.conf
+    image: iriswebapp_nginx:v2.3.7
+    container_name: iriswebapp_nginx
+    environment:
+      - IRIS_UPSTREAM_SERVER
+      - IRIS_UPSTREAM_PORT
+      - INTERFACE_HTTPS_PORT
+      - SERVER_NAME
+      - CERT_FILENAME
+      - KEY_FILENAME
+      - IRIS_AUTHENTICATION_TYPE
+    networks:
+      - iris_frontend
+    ports:
+      - "${INTERFACE_HTTPS_PORT:-443}:${INTERFACE_HTTPS_PORT:-443}"
+    volumes:
+      - "./certificates/web_certificates/:/www/certs/:ro"
+    restart: on-failure:5
+    depends_on:
+      - "app"
+
+volumes:
+  iris-downloads:
+  user_templates:
+  server_data:
+  db_data:
+
+networks:
+  iris_backend:
+    name: iris_backend
+  iris_frontend:
+    name: iris_frontend
+  proxy:
+    external:
+      name: nginx-proxy
