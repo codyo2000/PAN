@@ -28,9 +28,18 @@ This command downloads a test image and runs it in a container. When the contain
 
 You have now successfully installed and started Docker Engine.
 ### Pi-Hole
-Modern releases of Ubuntu (17.10+) and Fedora (33+) include `systemd-resolved` which is configured by default to implement a caching DNS stub resolver. This will prevent pi-hole from listening on port 53. The stub resolver should be disabled with: 
+1. Modern releases of Ubuntu (17.10+) and Fedora (33+) include `systemd-resolved` which is configured by default to implement a caching DNS stub resolver. This will prevent pi-hole from listening on port 53. The stub resolver should be disabled with: 
 ```bash
 sudo sed -r -i.orig 's/#?DNSStubListener=yes/DNSStubListener=no/g' /etc/systemd/resolved.conf
+sudo systemctl stop systemd.resolve.service
+sudo systemctl disable systemd.resolve.service
+```
+2. You'll need to add local dns resolution to the `resolve.conf` file:
+```bash
+sudo nano /etc/resolve.conf
+
+# Add the following line to the file
+nameserver 127.0.0.53
 ```
 ### Watchtower
 For watchtower to work, a docker network named "nginx-proxy" needs to be created:
