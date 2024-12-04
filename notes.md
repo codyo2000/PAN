@@ -41,11 +41,6 @@ sudo nano /etc/resolve.conf
 # Add the following line to the file
 nameserver 127.0.0.53
 ```
-### Watchtower
-For watchtower to work, a docker network named "nginx-proxy" needs to be created:
-```bash
-docker network create nginx-proxy
-```
 
 ### Iris
 1. Before moving forward, its suggested to modify the environment file to set an admin username/password:
@@ -57,4 +52,19 @@ nano .env
 #IRIS_ADM_PASSWORD=MySuperAdminPassword!
 #IRIS_ADM_EMAIL=admin@localhost
 #IRIS_ADM_USERNAME=administrator
+```
+### Open LDAP
+1. Install easyrsa:
+```bash
+sudo apt install easy-rsa
+```
+2. Create a symbolic link to the easyrsa command:
+```bash
+cd /usr/bin
+sudo ln -s /usr/share/easy-rsa/easyrsa easyrsa
+```
+### Running Docker Commands
+```bash
+# This builds 
+docker compose build
 ```
