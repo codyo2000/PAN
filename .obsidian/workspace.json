@@ -1,0 +1,199 @@
+{
+  "main": {
+    "id": "ab27e30f2e0b3ccb",
+    "type": "split",
+    "children": [
+      {
+        "id": "8a7810952ce0d291",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "ddef3b0d3e9d4999",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Preparations.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Preparations"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "a4e5a9f6e1bb79f9",
+    "type": "split",
+    "children": [
+      {
+        "id": "c6c183cf030c634e",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "4a84f930de28ed6b",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "b93aa34e65624cd9",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "9e1b31472fc37279",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "3db6048e3730ec5f",
+    "type": "split",
+    "children": [
+      {
+        "id": "7481631ee8fc7fef",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "447524783b45bb03",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "Preparations.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for Preparations"
+            }
+          },
+          {
+            "id": "bd8b851ad28c65d0",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "Preparations.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from Preparations"
+            }
+          },
+          {
+            "id": "23a1e1814354c022",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "9e064d3ec5362b68",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "Preparations.md"
+              },
+              "icon": "lucide-list",
+              "title": "Outline of Preparations"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false
+    }
+  },
+  "active": "4a84f930de28ed6b",
+  "lastOpenFiles": [
+    "PAN Application/server.cfg",
+    "PAN Application/idiot.sh",
+    "PAN Application/docker-compose.yaml",
+    "PAN Application/docker-compose.base.yml",
+    "PAN Application/create_ssl_cert.sh",
+    "PAN Application/volumes/db/var/lib/postgresql/data/pg_hba.conf",
+    "PAN Application/volumes/db/var/lib/postgresql/data/pg_commit_ts",
+    "PAN Application/volumes/db/var/lib/postgresql/data/pg_tblspc",
+    "PAN Application/volumes/db/var/lib/postgresql/data/postmaster.pid",
+    "PAN Application/volumes/db/var/lib/postgresql/data/pg_dynshmem",
+    "PAN Application/volumes/db/var/lib/postgresql/data/pg_subtrans/0000",
+    "PAN Application/volumes/app/mattermost/plugins/playbooks/assets/plugin_icon.svg",
+    "PAN Application/volumes/app/mattermost/plugins/playbooks/assets/incident_response.png",
+    "PAN Application/volumes/app/mattermost/plugins/playbooks/assets/plugin_icon.png",
+    "PAN Application/volumes/app/mattermost/plugins/com.mattermost.calls/standalone/dist/files/060b2710bdbbe3dfe48b58d59bd5f1fb.svg",
+    "PAN Application/volumes/app/mattermost/plugins/com.mattermost.calls/standalone/dist/files/958a565bc60ca9a2a77083fbb8222f0d.svg",
+    "PAN Application/volumes/app/mattermost/plugins/com.mattermost.calls/standalone/dist/files/269fca2c727e0f2417322e75ea226a6b.svg",
+    "PAN Application/volumes/app/mattermost/plugins/com.mattermost.calls/standalone/dist/files/eeb69ef0320dec1ffe78871321d62b76.svg",
+    "PAN Application/volumes/app/mattermost/plugins/com.mattermost.calls/standalone/dist/files/b2ba467b2483875ff7c02371a9a3ca3e.svg",
+    "PAN Application/volumes/app/mattermost/plugins/com.mattermost.calls/standalone/dist/files/ae5de1f116680c3123b91b7485b3efa8.svg",
+    "PAN Application/volumes/app/mattermost/plugins/com.mattermost.calls/standalone/dist/files/c1e38fd9e0e74ba58f7a2b77ef29fdd3.svg",
+    "PAN Application/tests/README.md",
+    "PAN Application/scripts/UPGRADE.md",
+    "PAN Application/docs/issuing-letsencrypt-certificate.md",
+    "PAN Application/docs/creation-of-nonsuperuser.md",
+    "PAN Application/deploy/kubernetes/TODO.md",
+    "PAN Application/deploy/kubernetes/README.md",
+    "PAN Application/deploy/eks_manifest/README.md",
+    "Preparations.md",
+    "Untitled.md",
+    "README.md"
+  ]
+}
