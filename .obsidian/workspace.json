@@ -11,14 +11,12 @@
             "id": "ddef3b0d3e9d4999",
             "type": "leaf",
             "state": {
-              "type": "markdown",
+              "type": "image",
               "state": {
-                "file": "Preparations.md",
-                "mode": "source",
-                "source": false
+                "file": "PAN.png"
               },
-              "icon": "lucide-file",
-              "title": "Preparations"
+              "icon": "lucide-image",
+              "title": "PAN"
             }
           }
         ]
@@ -176,15 +174,15 @@
     "PAN Application/volumes/db/var/lib/postgresql/data/pg_dynshmem",
     "PAN Application/volumes/db/var/lib/postgresql/data/pg_subtrans/0000",
     "PAN Application/volumes/app/mattermost/plugins/playbooks/assets/plugin_icon.svg",
-    "PAN Application/volumes/app/mattermost/plugins/playbooks/assets/incident_response.png",
     "PAN Application/volumes/app/mattermost/plugins/playbooks/assets/plugin_icon.png",
-    "PAN Application/volumes/app/mattermost/plugins/com.mattermost.calls/standalone/dist/files/060b2710bdbbe3dfe48b58d59bd5f1fb.svg",
-    "PAN Application/volumes/app/mattermost/plugins/com.mattermost.calls/standalone/dist/files/958a565bc60ca9a2a77083fbb8222f0d.svg",
-    "PAN Application/volumes/app/mattermost/plugins/com.mattermost.calls/standalone/dist/files/269fca2c727e0f2417322e75ea226a6b.svg",
+    "PAN Application/volumes/app/mattermost/plugins/playbooks/assets/incident_response.png",
     "PAN Application/volumes/app/mattermost/plugins/com.mattermost.calls/standalone/dist/files/eeb69ef0320dec1ffe78871321d62b76.svg",
+    "PAN Application/volumes/app/mattermost/plugins/com.mattermost.calls/standalone/dist/files/c1e38fd9e0e74ba58f7a2b77ef29fdd3.svg",
+    "PAN Application/volumes/app/mattermost/plugins/com.mattermost.calls/standalone/dist/files/be63a6c07ab3c29c9d63705e5cbdf5b6.svg",
     "PAN Application/volumes/app/mattermost/plugins/com.mattermost.calls/standalone/dist/files/b2ba467b2483875ff7c02371a9a3ca3e.svg",
     "PAN Application/volumes/app/mattermost/plugins/com.mattermost.calls/standalone/dist/files/ae5de1f116680c3123b91b7485b3efa8.svg",
-    "PAN Application/volumes/app/mattermost/plugins/com.mattermost.calls/standalone/dist/files/c1e38fd9e0e74ba58f7a2b77ef29fdd3.svg",
+    "PAN Application/volumes/app/mattermost/plugins/com.mattermost.calls/standalone/dist/files/9dc90ce7da96c612ab68e540be75f605.svg",
+    "PAN Application/volumes/app/mattermost/plugins/com.mattermost.calls/standalone/dist/files/958a565bc60ca9a2a77083fbb8222f0d.svg",
     "PAN Application/tests/README.md",
     "PAN Application/scripts/UPGRADE.md",
     "PAN Application/docs/issuing-letsencrypt-certificate.md",

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+ip_addr=$(hostname -I | awk '{print $1}')
+
 ## Stop script from running as root
 if [ "$EUID" -eq 0 ]; then
   echo "This script must not be run as root or with sudo. Exiting."
@@ -10,7 +12,7 @@ fi
 sudo chown -R 2000:2000 ./volumes/app/mattermost
 
 ## Prompt user for a base domain
-read -p "Enter your base domain: " base_domain
+read -p "Enter your base domain (i.e. test.local): " base_domain
 
 ## Docker pull needs to occur before disabling resolved
 docker-compose pull
@@ -56,3 +58,20 @@ openssl x509 -req -days 365 -in pan.$base_domain.csr -signkey pan.$base_domain.k
 cd ~/pan
 docker-compose up -d 
 docker-compose up -d
+
+
+## Move custom PiHole block list and run pihole command
+mv gravity.db etc-pihole/
+docker exec pihole chown pihole:pihole /etc/pihole/gravity.db
+docker exec pihole chmod 644 /etc/pihole/gravity.db
+docker exec pihole pihole -g
+
+## Create custom DNS resolution for pihole
+touch custom.list
+echo "$ip_addr pihole.$base_domain" >> custom.list
+echo "$ip_addr npm.$base_domain" >> custom.list
+echo "$ip_addr mattermost.$base_domain" >> custom.list
+echo "$ip_addr iris.$base_domain" >> custom.list
+echo "$ip_addr pan.$base_domain" >> custom.list
+sudo rm -f etc-pihole/custom.list
+mv custom.list etc-pihole/
