@@ -61,10 +61,10 @@ docker-compose up -d
 
 
 ## Move custom PiHole block list and run pihole command
+gunzip gravity.db.gz
 mv gravity.db etc-pihole/
 docker exec pihole chown pihole:pihole /etc/pihole/gravity.db
 docker exec pihole chmod 644 /etc/pihole/gravity.db
-docker exec pihole pihole -g
 
 ## Create custom DNS resolution for pihole
 touch custom.list
@@ -75,3 +75,4 @@ echo "$ip_addr iris.$base_domain" >> custom.list
 echo "$ip_addr pan.$base_domain" >> custom.list
 sudo rm -f etc-pihole/custom.list
 mv custom.list etc-pihole/
+docker exec pihole pihole -g
