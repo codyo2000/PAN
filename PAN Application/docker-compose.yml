@@ -1,0 +1,230 @@
+services:
+
+############## PAN LANDING PAGE ####################
+
+  pan:
+    image: lissy93/dashy
+    container_name: pan
+    volumes:
+      - ./data/pan/images:/app/user-data/item-icons
+      - ./data/pan/pan_config.yml:/app/user-data/conf.yml
+    environment:
+      - NODE_ENV=production
+    # Specify your user ID and group ID. You can find this by running `id -u` and `id -g`
+    #   - UID=1000
+    #   - GID=1000
+    restart: unless-stopped
+    healthcheck:
+      test: ['CMD', 'node', '/app/services/healthcheck']
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+################### NGINX PROXY ##########################
+
+  proxy:
+    container_name: proxy
+    image: nginx:latest
+    restart: unless-stopped
+    volumes:
+      - ./data/proxy/default.conf:/etc/nginx/conf.d/default.conf
+      - ./data/proxy/backend-not-found.html:/var/www/html/backend-not-found.html
+      - ./data/proxy/includes:/etc/nginx/includes
+      - ./data/proxy/ssl:/etc/ssl/certs/nginx
+    ports:
+      - 80:80
+      - 443:443
+    depends_on:
+      - pihole
+      - pan
+      - mattermost
+      - nginx
+
+##################### MATTERMOST ############################
+
+  postgres:
+    container_name: postgres
+    image: postgres:${POSTGRES_IMAGE_TAG}
+    restart: ${RESTART_POLICY}
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 100
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /var/run/postgresql
+    volumes:
+      - ${POSTGRES_DATA_PATH}:/var/lib/postgresql/data
+    environment:
+      # timezone inside container
+      - TZ
+      # necessary Postgres options/variables
+      - MM_POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - MM_POSTGRES_DB
+
+  mattermost:
+    container_name: mattermost
+    depends_on:
+      - postgres
+    image: mattermost/${MATTERMOST_IMAGE}:${MATTERMOST_IMAGE_TAG}
+    restart: ${RESTART_POLICY}
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 200
+    read_only: ${MATTERMOST_CONTAINER_READONLY}
+    tmpfs:
+      - /tmp
+    volumes:
+      - ${MATTERMOST_CONFIG_PATH}:/mattermost/config:rw
+      - ${MATTERMOST_DATA_PATH}:/mattermost/data:rw
+      - ${MATTERMOST_LOGS_PATH}:/mattermost/logs:rw
+      - ${MATTERMOST_PLUGINS_PATH}:/mattermost/plugins:rw
+      - ${MATTERMOST_CLIENT_PLUGINS_PATH}:/mattermost/client/plugins:rw
+      - ${MATTERMOST_BLEVE_INDEXES_PATH}:/mattermost/bleve-indexes:rw
+    environment:
+      - TZ
+      - MM_SQLSETTINGS_DRIVERNAME
+      - MM_SQLSETTINGS_DATASOURCE
+      - MM_BLEVESETTINGS_INDEXDIR
+      - MM_SERVICESETTINGS_SITEURL=https://pan.pokemon.cpt
+      - MM_SERVICESETTINGS_ALLOWCORSFROM=*
+      - MM_SERVICESETTINGS_WEBSOCKETURL=
+    ports:
+      - ${CALLS_PORT}:${CALLS_PORT}/udp
+      - ${CALLS_PORT}:${CALLS_PORT}/tcp
+
+##################### PIHOLE ##############################
+
+  pihole:
+    container_name: pihole
+    image: pihole/pihole:latest
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+    environment:
+      WEBPASSWORD: 'pihole'
+    volumes:
+      - './etc-pihole:/etc/pihole'
+      - './etc-dnsmasq.d:/etc/dnsmasq.d'
+    restart: unless-stopped
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: iriswebapp_rabbitmq
+    restart: always
+
+####################### IRIS ##################################
+
+  db:
+    container_name: iriswebapp_db
+    restart: always
+    environment:
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_ADMIN_USER
+      - POSTGRES_ADMIN_PASSWORD
+      - POSTGRES_DB
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    image: ${DB_IMAGE_NAME:-ghcr.io/dfir-iris/iriswebapp_db}:${DB_IMAGE_TAG:-v2.4.16}
+
+  app:
+    container_name: iriswebapp_app
+    command: ['nohup', './iris-entrypoint.sh', 'iriswebapp']
+    volumes:
+      - ./certificates/rootCA/irisRootCACert.pem:/etc/irisRootCACert.pem:ro
+      - ./certificates/:/home/iris/certificates/:ro
+      - ./certificates/ldap/:/iriswebapp/certificates/ldap/:ro
+      - iris-downloads:/home/iris/downloads
+      - user_templates:/home/iris/user_templates
+      - server_data:/home/iris/server_data
+    restart: always
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_ADMIN_USER
+      - POSTGRES_ADMIN_PASSWORD
+      - POSTGRES_SERVER
+      - POSTGRES_PORT
+      - IRIS_SECRET_KEY
+      - IRIS_SECURITY_PASSWORD_SALT
+    image: ${APP_IMAGE_NAME:-ghcr.io/dfir-iris/iriswebapp_app}:${APP_IMAGE_TAG:-v2.4.16}
+
+  worker:
+    container_name: iriswebapp_worker
+    restart: always
+    command: ['./wait-for-iriswebapp.sh', 'app:8000', './iris-entrypoint.sh', 'iris-worker']
+    volumes:
+      - ./certificates/rootCA/irisRootCACert.pem:/etc/irisRootCACert.pem:ro
+      - ./certificates/:/home/iris/certificates/:ro
+      - ./certificates/ldap/:/iriswebapp/certificates/ldap/:ro
+      - iris-downloads:/home/iris/downloads
+      - user_templates:/home/iris/user_templates
+      - server_data:/home/iris/server_data
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_ADMIN_USER
+      - POSTGRES_ADMIN_PASSWORD
+      - POSTGRES_SERVER
+      - POSTGRES_PORT
+      - IRIS_SECRET_KEY
+      - IRIS_SECURITY_PASSWORD_SALT
+      - IRIS_WORKER
+    image: ${APP_IMAGE_NAME:-ghcr.io/dfir-iris/iriswebapp_app}:${APP_IMAGE_TAG:-v2.4.16}
+
+  nginx:
+    container_name: iriswebapp_nginx
+    environment:
+      - IRIS_UPSTREAM_SERVER
+      - IRIS_UPSTREAM_PORT
+      - INTERFACE_HTTPS_PORT
+      - SERVER_NAME
+      - CERT_FILENAME
+      - KEY_FILENAME
+      - IRIS_AUTHENTICATION_TYPE
+    ports:
+      - 6943:443
+    volumes:
+      - "./certificates/web_certificates/:/www/certs/:ro"
+    restart: always
+    image: ${NGINX_IMAGE_NAME:-ghcr.io/dfir-iris/iriswebapp_nginx}:${NGINX_IMAGE_TAG:-v2.4.16}
+
+########################### CYBERCHEF #################################
+
+  cyberchef:
+    image: mpepping/cyberchef:latest
+    container_name: cyberchef
+    restart: unless-stopped
+
+########################## GoStatic ###################################
+
+  gostatic:
+    container_name: gostatic
+    image: pierrezemb/gostatic:latest
+    restart: unless-stopped
+    volumes:
+      - './data/gostatic:/srv/http'
+
+######################### MkDocs #############################
+
+  mkdocs:
+    image: squidfunk/mkdocs-material
+    container_name: mkdocs
+    restart: unless-stopped
+    volumes:
+      - ./data/mkdocs:/docs
+      - ./data/mkdocs/mkdocs.yml:/docs/mkdocs.yml
+
+
+volumes:
+  iris-downloads:
+  user_templates:
+  server_data:
+  db_data:

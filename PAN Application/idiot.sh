@@ -1,6 +1,8 @@
 #!/bin/bash
 
+## Variables
 ip_addr=$(hostname -I | awk '{print $1}')
+services=("pihole" "mattermost" "pan" "cyberchef" "gostatic" "mkdocs")
 
 ## Stop script from running as root
 if [ "$EUID" -eq 0 ]; then
@@ -8,11 +10,21 @@ if [ "$EUID" -eq 0 ]; then
   exit 1
 fi
 
+## Preparations
+echo -e "y\n" | sudo apt-get install easy-rsa 2>/dev/null
+clear
+
 ## Change ownership for Mattermost files
 sudo chown -R 2000:2000 ./volumes/app/mattermost
 
 ## Prompt user for a base domain
 read -p "Enter your base domain (i.e. test.local): " base_domain
+
+## Modify dashy yaml file
+sed -i "s/<BASE_DOMAIN>/$base_domain/g" ./data/pan/pan_config.yml
+
+## Modify proxy config file
+sed -i "s/<BASE_DOMAIN>/$base_domain/g" ./data/proxy/default.conf
 
 ## Docker pull needs to occur before disabling resolved
 docker-compose pull
@@ -29,30 +41,40 @@ echo "#nameserver 127.0.0.53" >> ~/resolv.conf
 sudo cp ~/resolv.conf /etc
 rm -f ~/resolv.conf
 
-## Generate SSL Certificates for your services
-mkdir ~/openssl
-mv server.cfg ~/openssl
-cd ~/openssl
+## Create Certificate Authority
+mkdir $base_domain-CA
+cd $base_domain-CA
+cp -r /usr/share/easy-rsa/* .
+./easyrsa init-pki 2>/dev/null
+echo -e "\n" | ./easyrsa build-ca nopass 2>/dev/null
 
-## PiHole
-openssl genrsa -out pihole.$base_domain.key 4096 2>/dev/null
-openssl req -new -key pihole.$base_domain.key -out pihole.$base_domain.csr -config server.cfg 2>/dev/null
-openssl x509 -req -days 365 -in pihole.$base_domain.csr -signkey pihole.$base_domain.key -out pihole.$base_domain.crt 2>/dev/null
+## Generate SSL Certificates
+for service in "${services[@]}"; do
+    # Generate the certificate request for each service
+    echo -e "\n" | ./easyrsa gen-req "$service.$base_domain" nopass 2>/dev/null
+    # Sign the certificate request with the CA
+    echo -e "yes\n" | ./easyrsa sign-req server "$service.$base_domain" 2>/dev/null
+done
+echo "Certificates have been generated and signed for: ${services[@]}"
 
-## NPM
-openssl genrsa -out npm.$base_domain.key 4096 2>/dev/null
-openssl req -new -key npm.$base_domain.key -out npm.$base_domain.csr -config server.cfg 2>/dev/null
-openssl x509 -req -days 365 -in npm.$base_domain.csr -signkey npm.$base_domain.key -out npm.$base_domain.crt 2>/dev/null
+## Move Certificates to Proxy
+mv pki/issued/*.crt ~/pan/data/proxy/ssl
+mv pki/private/*.key ~/pan/data/proxy/ssl
+mv pki/ca.crt ~/pan/data/gostatic
+sudo chmod -R 755 ~/pan/data/gostatic
 
-## Mattermost
-openssl genrsa -out mm.$base_domain.key 4096 2>/dev/null
-openssl req -new -key mm.$base_domain.key -out mm.$base_domain.csr -config server.cfg 2>/dev/null
-openssl x509 -req -days 365 -in mm.$base_domain.csr -signkey mm.$base_domain.key -out mm.$base_domain.crt 2>/dev/null
+## Generate SSL Certificates (OLD)
+#cd ~/pan/data/proxy/ssl
 
-## PAN Landing Page
-openssl genrsa -out pan.$base_domain.key 4096 2>/dev/null
-openssl req -new -key pan.$base_domain.key -out pan.$base_domain.csr -config server.cfg 2>/dev/null
-openssl x509 -req -days 365 -in pan.$base_domain.csr -signkey pan.$base_domain.key -out pan.$base_domain.crt 2>/dev/null
+# Loop through each service to generate certificates
+#for service in "${services[@]}"; do
+#    openssl genrsa -out "$service.$base_domain.key" 4096 2>/dev/null
+#    openssl req -new -key "$service.$base_domain.key" -out "$service.$base_domain.csr" -config server.cfg 2>/dev/null
+#    openssl x509 -req -days 365 -in "$service.$base_domain.csr" -signkey "$service.$base_domain.key" -out "$service.$base_domain.crt" 2>/dev/null
+#    rm -f "$service.$base_domain.csr"
+#done
+#rm -f server.cfg
+#echo "Certificates have been generated for: ${services[@]}"
 
 ## Run the docker compose file
 cd ~/pan
@@ -67,12 +89,8 @@ docker exec pihole chown pihole:pihole /etc/pihole/gravity.db
 docker exec pihole chmod 644 /etc/pihole/gravity.db
 
 ## Create custom DNS resolution for pihole
-touch custom.list
-echo "$ip_addr pihole.$base_domain" >> custom.list
-echo "$ip_addr npm.$base_domain" >> custom.list
-echo "$ip_addr mattermost.$base_domain" >> custom.list
-echo "$ip_addr iris.$base_domain" >> custom.list
-echo "$ip_addr pan.$base_domain" >> custom.list
+sed -i "s/<IP_ADDR>/$ip_addr/g" ./custom.list
+sed -i "s/<BASE_DOMAIN>/$base_domain/g" ./custom.list
 sudo rm -f etc-pihole/custom.list
 mv custom.list etc-pihole/
 docker exec pihole pihole -g
