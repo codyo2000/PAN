@@ -162,6 +162,7 @@
   },
   "active": "ddef3b0d3e9d4999",
   "lastOpenFiles": [
+    "idiot",
     "PAN Application/idiot.sh",
     "PAN Application/gravity.db.gz",
     "PAN Application/docker-compose.yml",
@@ -172,7 +173,6 @@
     "PAN Application/volumes/db/var/lib/postgresql/data/postmaster.pid",
     "PAN Application/volumes/db/var/lib/postgresql/data/pg_dynshmem",
     "PAN Application/volumes/db/var/lib/postgresql/data/pg_subtrans/0000",
-    "PAN Application/volumes/db/var/lib/postgresql/data/pg_subtrans",
     "PAN Application/volumes/app/mattermost/plugins/playbooks/assets/plugin_icon.svg",
     "PAN Application/volumes/app/mattermost/plugins/playbooks/assets/plugin_icon.png",
     "PAN Application/volumes/app/mattermost/plugins/playbooks/assets/incident_response.png",
