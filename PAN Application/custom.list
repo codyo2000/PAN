@@ -1,7 +1,0 @@
-<IP_ADDR> pihole.<BASE_DOMAIN>
-<IP_ADDR> pan.<BASE_DOMAIN>
-<IP_ADDR> mattermost.<BASE_DOMAIN>
-<IP_ADDR> iris.<BASE_DOMAIN>
-<IP_ADDR> cyberchef.<BASE_DOMAIN>
-<IP_ADDR> gostatic.<BASE_DOMAIN>
-<IP_ADDR> mkdocs.<BASE_DOMAIN>

@@ -1,0 +1,168 @@
+pageInfo:
+  title: PAN
+  description: Preconfigured Application Node Landing Page
+  navLinks:
+    - title: GitHub
+      path: https://github.com/Lissy93/dashy
+      target: newtab
+    - title: Documentation
+      path: https://dashy.to/docs
+      target: newtab
+  logo: /item-icons/pan.png
+appConfig:
+  theme: adventure
+  layout: horizontal
+  iconSize: large
+  startingView: default
+  defaultOpeningMethod: newtab
+  statusCheck: false
+  statusCheckInterval: 0
+  faviconApi: local
+  routingMode: history
+  enableMultiTasking: false
+  widgetsAlwaysUseProxy: false
+  webSearch:
+    disableWebSearch: false
+    searchEngine: duckduckgo
+    openingMethod: newtab
+    searchBangs: {}
+  enableFontAwesome: true
+  enableMaterialDesignIcons: false
+  hideComponents:
+    hideHeading: false
+    hideNav: false
+    hideSearch: false
+    hideSettings: false
+    hideFooter: false
+  auth:
+    enableGuestAccess: false
+    users: []
+    enableOidc: false
+    oidc: {}
+    enableHeaderAuth: false
+    headerAuth:
+      userHeader: REMOTE_USER
+      proxyWhitelist: []
+    enableKeycloak: false
+  showSplashScreen: false
+  preventWriteToDisk: false
+  preventLocalSave: false
+  disableConfiguration: false
+  disableConfigurationForNonAdmin: false
+  allowConfigEdit: true
+  enableServiceWorker: false
+  disableContextMenu: false
+  disableUpdateChecks: false
+  disableSmartSort: false
+  enableErrorReporting: false
+sections:
+  - name: Analyst
+    icon: linux.png
+    items:
+      - &ref_0
+        title: Iris
+        description: Case management and other cool things
+        icon: iris.png
+        url: https://iris.<BASE_DOMAIN>:6943
+        target: newtab
+        id: 0_732_iris
+      - &ref_1
+        title: Mattermost
+        description: Chat with your friends. Erh, I mean coworkers
+        icon: hl-mattermost
+        url: https://mattermost.<BASE_DOMAIN>
+        target: newtab
+        id: 1_732_mattermost
+      - &ref_2
+        title: Splunk
+        description: Get your Splunk on
+        icon: splunk.png
+        url: https://splunk.<BASE_DOMAIN>
+        target: newtab
+        id: 2_732_splunk
+      - &ref_3
+        title: Security Onion
+        description: An onion that doesn't (usually) make you cry
+        icon: security-onion.png
+        url: https://seconion.<BASE_DOMAIN>
+        target: newtab
+        id: 3_732_securityonion
+    displayData:
+      sortBy: alphabetical
+      rows: 1
+      cols: 1
+      collapsed: false
+      hideForGuests: false
+    filteredItems:
+      - *ref_0
+      - *ref_1
+      - *ref_2
+      - *ref_3
+  - name: Administration
+    icon: it-tools-light.png
+    displayData:
+      sortBy: alphabetical
+      rows: 1
+      cols: 1
+      collapsed: false
+      hideForGuests: false
+    items:
+      - &ref_4
+        title: PiHole
+        description: DNS Server/Sinkhole. Where queries go to die
+        icon: pi-hole.png
+        url: https://pihole.<BASE_DOMAIN>/admin
+        target: newtab
+        id: 0_1478_pihole
+      - &ref_5
+        title: VCSA
+        description: Master of all ESXi Hosts
+        icon: vmware-vcenter.png
+        url: https://vcsa.<BASE_DOMAIN>
+        target: newtab
+        id: 1_1478_vcsa
+    filteredItems:
+      - *ref_4
+      - *ref_5
+  - name: Useful Resources
+    icon: booklogr-light.png
+    displayData:
+      sortBy: alphabetical
+      rows: 1
+      cols: 1
+      collapsed: false
+      hideForGuests: false
+    items:
+      - &ref_6
+        title: Hunt Handbook
+        description: The Holy Bible of Hunt Documentation
+        icon: mkdocs.png
+        url: https://mkdocs.<BASE_DOMAIN>
+        target: newtab
+        id: 0_1615_hunthandbook
+      - &ref_7
+        title: ChatGPT
+        description: If you don't use it, get with the times
+        icon: chatgpt.png
+        url: https://chatgpt.com
+        target: newtab
+        id: 1_1615_chatgpt
+      - &ref_8
+        title: CyberChef
+        description: The Cyber Swiss Army Knife
+        icon: cyberchef.png
+        url: https://cyberchef.<BASE_DOMAIN>
+        target: newtab
+        id: 2_1615_cyberchef
+      - &ref_9
+        title: CA Certificate
+        description: Download this and add to browser certificates. Trust
+        icon: lets-encrypt.png
+        url: https://gostatic.<BASE_DOMAIN>/ca.crt
+        target: newtab
+        id: 3_1615_cacertificate
+    filteredItems:
+      - *ref_6
+      - *ref_7
+      - *ref_8
+      - *ref_9
