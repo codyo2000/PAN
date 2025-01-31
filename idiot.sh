@@ -12,6 +12,7 @@ fi
 
 ## Preparations
 echo -e "y\n" | sudo apt-get install easy-rsa 2>/dev/null
+mv ./data/env.tmp ./.env
 clear
 
 ## Change ownership for Mattermost files
