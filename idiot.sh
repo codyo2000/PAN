@@ -78,6 +78,21 @@ echo -e "y\n" | sudo apt-get install docker.io docker-compose easy-rsa 2>/dev/nu
 sudo docker swarm init
 clear
 
+# Function to remove all .gitkeep files
+remove_gitkeep() {
+  for file in "$1"/*; do
+    if [ -d "$file" ]; then
+      # Recursively check subdirectories
+      remove_gitkeep "$file"
+    elif [ -f "$file" ] && [ "$(basename "$file")" == ".gitkeep" ]; then
+      # Remove .gitkeep file
+      rm "$file"
+      echo "Removed $file"
+    fi
+  done
+}
+remove_gitkeep .
+
 ## Put the password into a docker secret
 echo "$password" | docker secret create password -
 
