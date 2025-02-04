@@ -80,16 +80,8 @@ clear
 
 # Function to remove all .gitkeep files
 remove_gitkeep() {
-  for file in "$1"/*; do
-    if [ -d "$file" ]; then
-      # Recursively check subdirectories
-      remove_gitkeep "$file"
-    elif [ -f "$file" ] && [ "$(basename "$file")" == ".gitkeep" ]; then
-      # Remove .gitkeep file
-      rm "$file"
-      echo "Removed $file"
-    fi
-  done
+  # Search for .gitkeep files and remove them
+  find "$1" -type f -name ".gitkeep" -exec rm -f {} \; -print
 }
 remove_gitkeep .
 
