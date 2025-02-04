@@ -104,18 +104,20 @@ services:
       - "53:53/tcp"
       - "53:53/udp"
     environment:
-      WEBPASSWORD: 'pihole'
+      - WEBPASSWORD_FILE=/run/secrets/password
+    secrets:
+      - password
     volumes:
       - './etc-pihole:/etc/pihole'
       - './etc-dnsmasq.d:/etc/dnsmasq.d'
     restart: unless-stopped
 
+###################### IRIS ########################################
+
   rabbitmq:
     image: rabbitmq:3-management-alpine
     container_name: iriswebapp_rabbitmq
     restart: always
-
-####################### IRIS ##################################
 
   db:
     container_name: iriswebapp_db
@@ -143,6 +145,9 @@ services:
     restart: always
     env_file:
       - .env
+    depends_on:
+      - rabbitmq
+      - db
     environment:
       - POSTGRES_USER
       - POSTGRES_PASSWORD
@@ -167,6 +172,10 @@ services:
       - server_data:/home/iris/server_data
     env_file:
       - .env
+    depends_on:
+      - rabbitmq
+      - db
+      - app
     environment:
       - POSTGRES_USER
       - POSTGRES_PASSWORD
@@ -189,8 +198,8 @@ services:
       - CERT_FILENAME
       - KEY_FILENAME
       - IRIS_AUTHENTICATION_TYPE
-    ports:
-      - 6943:443
+    depends_on:
+      - app
     volumes:
       - "./certificates/web_certificates/:/www/certs/:ro"
     restart: always
@@ -228,3 +237,7 @@ volumes:
   user_templates:
   server_data:
   db_data:
+
+secrets:
+   password:
+     file: password.txt
