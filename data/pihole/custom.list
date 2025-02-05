@@ -5,3 +5,6 @@
 <IP_ADDR> cyberchef.<BASE_DOMAIN>
 <IP_ADDR> gostatic.<BASE_DOMAIN>
 <IP_ADDR> mkdocs.<BASE_DOMAIN>
+<IP_ADDR> vaultwarden.<BASE_DOMAIN>
+<IP_ADDR> ldapadmin.<BASE_DOMAIN>
+<IP_ADDR> ldap.<BASE_DOMAIN>

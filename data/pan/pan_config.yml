@@ -87,13 +87,6 @@ sections:
         url: https://seconion.<BASE_DOMAIN>
         target: newtab
         id: 3_732_securityonion
-      - &ref_4
-        title: Velociraptor
-        description: Not an EDR. ER? DFIR? Who knows...
-        icon: velo.png
-        url: https://edr.<BASE_DOMAIN>
-        target: newtab
-        id: 4_732_velociraptor
     displayData:
       sortBy: alphabetical
       rows: 1
@@ -105,7 +98,6 @@ sections:
       - *ref_1
       - *ref_2
       - *ref_3
-      - *ref_4
   - name: Internal Monitoring
     icon: phoneinfoga-light.png
     displayData:
@@ -115,21 +107,21 @@ sections:
       collapsed: false
       hideForGuests: false
     items:
-      - &ref_5
+      - &ref_4
         title: Internal Sec Onion
         description: Check out what your coworkers are doing
         icon: security-onion.png
         url: https://internalso.<BASE_DOMAIN>
         target: newtab
         id: 0_1923_internalseconion
-      - &ref_6
+      - &ref_5
         title: Internal Splunk
         description: Get your Splunk on (Internally)
         icon: splunk.png
         url: https://internalspl.<BASE_DOMAIN>
         target: newtab
         id: 1_1923_internalsplunk
-      - &ref_7
+      - &ref_6
         title: Internal Velociraptor
         description: Blue screen your coworkers PC lol
         icon: velo.png
@@ -137,9 +129,9 @@ sections:
         target: newtab
         id: 2_1923_internalvelociraptor
     filteredItems:
+      - *ref_4
       - *ref_5
       - *ref_6
-      - *ref_7
   - name: Useful Resources
     icon: booklogr-light.png
     displayData:
@@ -149,35 +141,43 @@ sections:
       collapsed: false
       hideForGuests: false
     items:
-      - &ref_8
+      - &ref_7
         title: Hunt Handbook
         description: The Holy Bible of Hunt Documentation
         icon: mkdocs.png
         url: https://mkdocs.<BASE_DOMAIN>
         target: newtab
         id: 0_1615_hunthandbook
-      - &ref_9
+      - &ref_8
         title: ChatGPT
         description: If you don't use it, get with the times
         icon: chatgpt.png
         url: https://chatgpt.com
         target: newtab
         id: 1_1615_chatgpt
-      - &ref_10
+      - &ref_9
         title: CyberChef
         description: The Cyber Swiss Army Knife
         icon: cyberchef.png
         url: https://cyberchef.<BASE_DOMAIN>
         target: newtab
         id: 2_1615_cyberchef
-      - &ref_11
+      - &ref_10
         title: CA Certificate
         description: Download this and add to browser certificates. Trust
         icon: lets-encrypt.png
         url: https://gostatic.<BASE_DOMAIN>/ca.crt
         target: newtab
         id: 3_1615_cacertificate
+      - &ref_11
+        title: Vault Warden
+        description: Prison to all passwords, keeper of secrets
+        icon: vaultwarden-light.png
+        url: https://vaultwarden.<BASE_DOMAIN>
+        target: newtab
+        id: 4_1615_vaultwarden
     filteredItems:
+      - *ref_7
       - *ref_8
       - *ref_9
       - *ref_10
@@ -240,6 +240,13 @@ sections:
         url: https://esxi3.<BASE_DOMAIN>
         target: newtab
         id: 6_1478_esxistack
+      - &ref_19
+        title: LDAP Admin
+        description: Delete your coworkers user account
+        icon: phpldapadmin.png
+        url: https://ldapadmin.<BASE_DOMAIN>
+        target: newtab
+        id: 7_1478_ldapadmin
     filteredItems:
       - *ref_12
       - *ref_13
@@ -248,3 +255,4 @@ sections:
       - *ref_16
       - *ref_17
       - *ref_18
+      - *ref_19

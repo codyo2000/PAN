@@ -1,0 +1,213 @@
+{
+  "main": {
+    "id": "47e289b6a4f0e7c9",
+    "type": "split",
+    "children": [
+      {
+        "id": "544afb74f63f7664",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "c7879a9941a73c75",
+            "type": "leaf",
+            "state": {
+              "type": "empty",
+              "state": {},
+              "icon": "lucide-file",
+              "title": "New tab"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "bfbb0f3b73cbed34",
+    "type": "split",
+    "children": [
+      {
+        "id": "8a5d4b8665114ed4",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "2000f13e1a10cfc8",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "5668b29e569126c6",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "b2a0c5ba3091f541",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "75a82215e678cbc5",
+    "type": "split",
+    "children": [
+      {
+        "id": "e6c80b2837c20cb9",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "cf7a780f3d0fa94f",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks"
+            }
+          },
+          {
+            "id": "c425ad52637106b1",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links"
+            }
+          },
+          {
+            "id": "f1cbb1ba37b6b76d",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "834438f14c657110",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false
+    }
+  },
+  "active": "c7879a9941a73c75",
+  "lastOpenFiles": [
+    "source/tests/unit/datamgmt/client/__init__.py",
+    "source/tests/unit/datamgmt/client/test_client_db.py",
+    "source/tests/unit/blueprints/manage/__init__.py",
+    "source/tests/unit/blueprints/manage/test_manage_modules_routes.py",
+    "source/tests/unit/blueprints/case/__init__.py",
+    "source/tests/unit/blueprints/case/test_case_tasks_routes.py",
+    "source/tests/unit/blueprints/case/test_case_rfiles_routes.py",
+    "source/tests/unit/datamgmt/__init__.py",
+    "source/tests/unit/datamgmt/client",
+    "source/tests/unit/blueprints/__init__.py",
+    "source/tests/unit/blueprints/manage",
+    "volumes/app/mattermost/plugins/playbooks/assets/plugin_icon.png",
+    "volumes/app/mattermost/plugins/playbooks/assets/plugin_icon.svg",
+    "volumes/app/mattermost/plugins/playbooks/assets/incident_response.png",
+    "volumes/app/mattermost/plugins/com.mattermost.calls/standalone/dist/files/eeb69ef0320dec1ffe78871321d62b76.svg",
+    "volumes/app/mattermost/plugins/com.mattermost.calls/standalone/dist/files/c1e38fd9e0e74ba58f7a2b77ef29fdd3.svg",
+    "volumes/app/mattermost/plugins/com.mattermost.calls/standalone/dist/files/be63a6c07ab3c29c9d63705e5cbdf5b6.svg",
+    "volumes/app/mattermost/plugins/com.mattermost.calls/standalone/dist/files/b2ba467b2483875ff7c02371a9a3ca3e.svg",
+    "volumes/app/mattermost/plugins/com.mattermost.calls/standalone/dist/files/ae5de1f116680c3123b91b7485b3efa8.svg",
+    "volumes/app/mattermost/plugins/com.mattermost.calls/standalone/dist/files/9dc90ce7da96c612ab68e540be75f605.svg",
+    "volumes/app/mattermost/plugins/com.mattermost.calls/standalone/dist/files/958a565bc60ca9a2a77083fbb8222f0d.svg",
+    "tests/README.md",
+    "scripts/UPGRADE.md",
+    "docs/issuing-letsencrypt-certificate.md",
+    "docs/creation-of-nonsuperuser.md",
+    "deploy/kubernetes/TODO.md",
+    "deploy/kubernetes/README.md",
+    "deploy/eks_manifest/README.md",
+    "data/mkdocs/docs/4 - learning center/4 - operation/import_ssh_key.md",
+    "data/mkdocs/docs/4 - learning center/2 - network/http_background.md",
+    "data/mkdocs/docs/4 - learning center/2 - network/dns_type_codes.md",
+    "data/mkdocs/docs/4 - learning center/3 - hosts/windows_port_overview.md",
+    "data/mkdocs/docs/4 - learning center/3 - hosts/windows_event_reference.md",
+    "data/mkdocs/docs/4 - learning center/3 - hosts/registry-locations.md",
+    "data/mkdocs/docs/4 - learning center/3 - hosts/op-tainted-love.md",
+    "data/mkdocs/docs/4 - learning center/1 - command line/Quick Commands.md",
+    "data/mkdocs/docs/4 - learning center/1 - command line/jq_primer.md",
+    "data/mkdocs/docs/4 - learning center/1 - command line/Ansible Roles for Splunk.md",
+    "data/mkdocs/docs/3 - hosts/Tools/velociraptor_setup.md",
+    "data/mkdocs/docs/3 - hosts/Tools/velociraptor_key_commands.md",
+    "data/mkdocs/docs/3 - hosts/Tools/MemProcFs.md",
+    "data/mkdocs/docs/3 - hosts/Tools/MagnetRESPONSE.md",
+    "data/mkdocs/docs/3 - hosts/Tools/FTKImager.md",
+    "data/mkdocs/docs/3 - hosts/Tools/Autopsy_Usage.md",
+    "data/mkdocs/docs/3 - hosts/Tools/Assembly_line.md",
+    "data/mkdocs/docs/3 - hosts/Methods/system_information.md"
+  ]
+}
