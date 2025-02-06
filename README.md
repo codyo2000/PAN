@@ -17,7 +17,7 @@ One container to rule them all, deploy them all, and defend them all.
    git clone https://github.com/codyo2000/pan.git
    cd pan
    ```
-2. Before continuing, download an updated copy of the hunt handbook and mkdocs config file, and put it in data/mkdocs. There should be 
+2. Before continuing, download an updated copy of the hunt handbook and mkdocs config file, and put it in data/mkdocs. There should be a directory named `docs` and a file named `mkdocs.yml`.
 3. Make the install script executable
    ```sh
    chmod +x install_pan.sh
