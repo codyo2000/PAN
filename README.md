@@ -14,7 +14,7 @@ One container to rule them all, deploy them all, and defend them all.
 ### 🛠 Getting Started  
 1. Clone the repository  
    ```sh
-   git clone https://github.com/yourusername/PAN.git
+   git clone https://github.com/codyo2000/pan.git
    cd pan
    ```
 2. Make the install script executable
