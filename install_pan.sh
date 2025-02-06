@@ -1,4 +1,13 @@
 #!/bin/bash
+
+## Stop script from running as root
+if [ "$EUID" -eq 0 ]; then
+  echo "This script must not be run as root or with sudo. Exiting."
+  exit 1
+fi
+
+## Request sudo password
+sudo -v
 clear
 
 ## Welcome message
@@ -30,24 +39,7 @@ echo "Start it up, dive in, and begin defending the important things!"
 echo "If something breaks… well, let's just say it's a feature."
 echo ""
 read -p "Press Enter to begin the chaos..."
-
-## Variables
-ip_addr=$(hostname -I | awk '{print $1}')
-services=("ssp" "ldap" "ldapadmin" "vaultwarden" "iris" "pihole" "mattermost" "pan" "cyberchef" "gostatic" "mkdocs")
-base_domain=""
-#username=""
-#password=""
-ldap_password=$(openssl rand -base64 20 | tr -d '\n')
-ldap_ro_password=$(openssl rand -base64 20 | tr -d '\n')
-salt1=$(openssl rand -base64 64 | tr -d '\n')
-salt2=$(openssl rand -base64 64 | tr -d '\n')
-salt3=$(openssl rand -base64 64 | tr -d '\n')
-
-## Stop script from running as root
-if [ "$EUID" -eq 0 ]; then
-  echo "This script must not be run as root or with sudo. Exiting."
-  exit 1
-fi
+clear
 
 ## Display a prompt if the domain is not provided
 prompt_for_domain() {
@@ -56,24 +48,13 @@ prompt_for_domain() {
     fi
 }
 
-## Display a prompt if the username is not provided
-# prompt_for_username() {     # Commented out to disable username prompting
-#     if [ -z "$username" ]; then
-#         read -p "Please enter an admin username: " username
-#     fi
-# }
-
-## Command line options for -d or --domain and -u or --username
+## Command line options for -d or --domain
 while [[ $# -gt 0 ]]; do
     case "$1" in
         -d|--domain)
             base_domain="$2"
             shift 2
             ;;
-        # -u|--username)   # Commented out to disable username prompting
-        #     username="$2"
-        #     shift 2
-        #     ;;
         *)
             shift
             ;;
@@ -83,63 +64,68 @@ done
 ## If no domain is provided via -d, prompt the user
 prompt_for_domain
 
-## If no username is provided via -u, prompt the user
-# prompt_for_username   # Commented out to disable username prompting
-
-## Prompt the user for a password
-#read_password() {
-#    read -sp "Enter an admin password: " password
-#    echo
-#}
-#read_password
-
-# Ask the user to verify the password
-#read -sp "Verify admin password: " verify_password
-#echo
-
-# Check if both passwords match
-#if [ "$password" != "$verify_password" ]; then
-#    echo "Passwords do not match. Please try again."
-#    read_password
-#fi
-#touch password.txt
-#echo "$password" >> password.txt
-#clear
-
-## Preparations
-echo -e "y\n" | sudo apt-get install docker.io docker-compose easy-rsa 2>/dev/null
+## Define Variables
+ip_addr=$(hostname -I | awk '{print $1}')
+services=("ssp" "ldap" "ldapadmin" "vaultwarden" "iris" "pihole" "mattermost" "pan" "cyberchef" "gostatic" "mkdocs")
+ldap_password=$(openssl rand -base64 20 | tr -d '\n')
+ldap_ro_password=$(openssl rand -base64 20 | tr -d '\n')
+salt1=$(openssl rand -base64 64 | tr -d '\n')
+salt2=$(openssl rand -base64 64 | tr -d '\n')
+salt3=$(openssl rand -base64 64 | tr -d '\n')
 ldap_base_dn=$(echo "$base_domain" | awk -F'.' '{for(i=1;i<=NF;i++) printf "dc=%s%s", $i, (i<NF ? "," : "")}')
-#sudo docker swarm init
-clear
 
-# Function to remove all .gitkeep files
+## Define Colors
+RED="\e[1;31m"
+GREEN="\e[1;32m"
+CYAN="\e[1;36m"
+YELLOW="\e[1;33m"
+NC="\e[0m" # No Color
+
+## Installing Services
+echo -n "Installing required services... "
+
+# Run the installation command silently
+echo -e "y\n" | sudo apt-get install -y docker.io docker-compose easy-rsa >/dev/null 2>&1
+
+echo -e "${GREEN}Done${NC}"
+
+## Moving ahd editing important files
+echo -n "Rearranging the landscape... "
+
+## Function to remove all .gitkeep files
 remove_gitkeep() {
-  # Search for .gitkeep files and remove them
-  find "$1" -type f -name ".gitkeep" -exec rm -f {} \; -print
+  find "$1" -type f -name ".gitkeep" -exec rm -f {} \; >/dev/null 2>&1
 }
-remove_gitkeep .
-clear
-## Put the password into a docker secret
-#echo "$password" | docker secret create password -
 
-## Change ownership for Mattermost files
-sudo chown -R 2000:2000 ./volumes/app/mattermost
+## Run all tasks in the background
+remove_gitkeep . &
 
-## Add variables to corresponding files
-sed -i "s/<BASE_DOMAIN>/$base_domain/g" ./data/pan/pan_config.yml
-sed -i "s/<BASE_DOMAIN>/$base_domain/g" ./data/proxy/default.conf
-sed -i "s/<BASE_DOMAIN>/$base_domain/g" ./data/env.tmp
-sed -i "s|<LDAP_PW>|$(printf '%q' "$ldap_password")|g" ./data/env.tmp
-sed -i "s|<LDAP_RO_PW>|$(printf '%q' "$ldap_ro_password")|g" ./data/env.tmp
-sed -i "s|<LDAP_BASE_DN>|$(printf '%q' "$ldap_base_dn")|g" ./data/env.tmp
-sed -i "s|<LDAP_PW>|$(printf '%q' "$ldap_password")|g" ./data/ssp/config.inc.php
-sed -i "s|<LDAP_BASE_DN>|$(printf '%q' "$ldap_base_dn")|g" ./data/ssp/config.inc.php
-sed -i "s|<SALT1>|$(printf '%q' "$salt1")|g" ./data/env.tmp
-sed -i "s|<SALT2>|$(printf '%q' "$salt2")|g" ./data/env.tmp
-sed -i "s|<SALT3>|$(printf '%q' "$salt3")|g" ./data/env.tmp
-mv ./data/env.tmp ./.env
+sudo chown -R 2000:2000 ./volumes/app/mattermost >/dev/null 2>&1 &
+
+sed -i "s/<BASE_DOMAIN>/$base_domain/g" ./data/pan/pan_config.yml &
+sed -i "s/<BASE_DOMAIN>/$base_domain/g" ./data/proxy/default.conf &
+sed -i "s/<BASE_DOMAIN>/$base_domain/g" ./data/env.tmp &
+sed -i "s|<LDAP_PW>|$(printf '%q' "$ldap_password")|g" ./data/env.tmp &
+sed -i "s|<LDAP_RO_PW>|$(printf '%q' "$ldap_ro_password")|g" ./data/env.tmp &
+sed -i "s|<LDAP_BASE_DN>|$(printf '%q' "$ldap_base_dn")|g" ./data/env.tmp &
+sed -i "s|<LDAP_PW>|$(printf '%q' "$ldap_password")|g" ./data/ssp/config.inc.php &
+sed -i "s|<LDAP_BASE_DN>|$(printf '%q' "$ldap_base_dn")|g" ./data/ssp/config.inc.php &
+sed -i "s|<SALT1>|$(printf '%q' "$salt1")|g" ./data/env.tmp &
+sed -i "s|<SALT2>|$(printf '%q' "$salt2")|g" ./data/env.tmp &
+sed -i "s|<SALT3>|$(printf '%q' "$salt3")|g" ./data/env.tmp &
+
+## Move file after all replacements are complete
+wait
+mv ./data/env.tmp ./.env >/dev/null 2>&1 &
+
+## Wait for all background processes to finish
+wait
+
+echo -e "${GREEN}Done${NC}"
 
 ## Docker pull needs to occur before disabling resolved
+echo "Pulling docker images"
+echo -e "\n-------------------------------------\n"
 sudo docker-compose pull
 
 ## Disable systemd-resolved and rewrite resolv.conf
@@ -159,12 +145,16 @@ cp -r /usr/share/easy-rsa/* .
 echo -e "\n" | ./easyrsa build-ca nopass 2>/dev/null
 
 ## Generate SSL Certificates
+echo -n "Generating SSL Certificates... "
+
 for service in "${services[@]}"; do
-    # Generate the certificate request for each service
-    echo -e "\n" | ./easyrsa gen-req "$service.$base_domain" nopass 2>/dev/null
-    # Sign the certificate request with the CA
-    echo -e "yes\n" | ./easyrsa sign-req server "$service.$base_domain" 2>/dev/null
+    # Generate the certificate request for each service silently
+    echo -e "\n" | ./easyrsa gen-req "$service.$base_domain" nopass >/dev/null 2>&1
+    # Sign the certificate request with the CA silently
+    echo -e "yes\n" | ./easyrsa sign-req server "$service.$base_domain" >/dev/null 2>&1
 done
+
+echo -e "${GREEN}Done${NC}"
 
 ## Copy Certificates to Proxy, GoStatic, and OpenLDAP
 cp ./pki/issued/*.crt ../data/proxy/ssl
@@ -179,7 +169,6 @@ sudo chmod -R 755 ./data/gostatic
 
 ## Run the docker compose file
 sudo docker-compose up -d
-#rm -f password.txt
 
 ## Move custom PiHole block list and run pihole command
 gunzip ./data/pihole/gravity.db.gz
@@ -207,33 +196,25 @@ echo "Changing PiHole Credentials"
 echo -e "\n--------------------------------\n"
 sudo docker exec -it pihole pihole -a -p
 
-## Define Colors
-RED="\e[1;31m"
-GREEN="\e[1;32m"
-CYAN="\e[1;36m"
-YELLOW="\e[1;33m"
-RESET="\e[0m"
-
 ## Echo default passwords to user
 iris_password=$(docker-compose logs app | grep "Administrator password:" | sed -E 's/.*Administrator password: ([^ ]*).*/\1/')
 clear
-echo -e "${RED}Change these credentials IMMEDIATELY:${RESET}\n"
-echo -e "${CYAN}Iris Credentials${RESET}"
-echo -e "${YELLOW}Username:${RESET} administrator"
-echo -e "${YELLOW}Password:${RESET} $iris_password"
+echo -e "${RED}Change these credentials IMMEDIATELY:${NC}\n"
+echo -e "${CYAN}Iris Credentials${NC}"
+echo -e "${YELLOW}Username:${NC} administrator"
+echo -e "${YELLOW}Password:${NC} $iris_password"
 echo -e "\n--------------------------------\n"
 
-echo -e "${GREEN}Save these credentials. You will never see them again after this:${RESET}\n"
-echo -e "${CYAN}LDAP Admin Credentials${RESET}"
-echo -e "${YELLOW}Username:${RESET} cn=admin,$ldap_base_dn"
-echo -e "${YELLOW}Password:${RESET} $ldap_password\n"
+echo -e "${GREEN}Save these credentials. You will never see them again after this:${NC}\n"
+echo -e "${CYAN}LDAP Admin Credentials${NC}"
+echo -e "${YELLOW}Username:${NC} cn=admin,$ldap_base_dn"
+echo -e "${YELLOW}Password:${NC} $ldap_password\n"
 
-echo -e "${CYAN}LDAP Read Only Credentials${RESET}"
-echo -e "${YELLOW}Username:${RESET} cn=readonly,$ldap_base_dn"
-echo -e "${YELLOW}Password:${RESET} $ldap_ro_password"
+echo -e "${CYAN}LDAP Read Only Credentials${NC}"
+echo -e "${YELLOW}Username:${NC} cn=readonly,$ldap_base_dn"
+echo -e "${YELLOW}Password:${NC} $ldap_ro_password"
 echo -e "\n--------------------------------\n"
 
 ## Erase passwords from .env file
 sed -i 's/^LDAP_ADMIN_PASSWORD=.*/LDAP_ADMIN_PASSWORD=""/' ./.env
 sed -i 's/^LDAP_READONLY_USER_PASSWORD=.*/LDAP_READONLY_USER_PASSWORD=""/' ./.env
-
