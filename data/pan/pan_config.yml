@@ -63,30 +63,16 @@ sections:
         title: Iris
         description: Case management and other cool things
         icon: iris.png
-        url: https://iris.test.local
+        url: https://iris.<BASE_DOMAIN>
         target: newtab
         id: 0_732_iris
       - &ref_1
         title: Mattermost
         description: Chat with your friends. Erh, I mean coworkers
         icon: hl-mattermost
-        url: https://mattermost.test.local
+        url: https://mattermost.<BASE_DOMAIN>
         target: newtab
         id: 1_732_mattermost
-      - &ref_2
-        title: Splunk
-        description: Get your Splunk on
-        icon: splunk.png
-        url: https://splunk.test.local
-        target: newtab
-        id: 2_732_splunk
-      - &ref_3
-        title: Security Onion
-        description: An onion that doesn't (usually) make you cry
-        icon: security-onion.png
-        url: https://seconion.test.local
-        target: newtab
-        id: 3_732_securityonion
     displayData:
       sortBy: alphabetical
       rows: 1
@@ -96,42 +82,6 @@ sections:
     filteredItems:
       - *ref_0
       - *ref_1
-      - *ref_2
-      - *ref_3
-  - name: Internal Monitoring
-    icon: phoneinfoga-light.png
-    displayData:
-      sortBy: default
-      rows: 1
-      cols: 1
-      collapsed: false
-      hideForGuests: false
-    items:
-      - &ref_4
-        title: Internal Sec Onion
-        description: Check out what your coworkers are doing
-        icon: security-onion.png
-        url: https://internalso.test.local
-        target: newtab
-        id: 0_1923_internalseconion
-      - &ref_5
-        title: Internal Splunk
-        description: Get your Splunk on (Internally)
-        icon: splunk.png
-        url: https://internalspl.test.local
-        target: newtab
-        id: 1_1923_internalsplunk
-      - &ref_6
-        title: Internal Velociraptor
-        description: Blue screen your coworkers PC lol
-        icon: velo.png
-        url: https://internaledr.test.local
-        target: newtab
-        id: 2_1923_internalvelociraptor
-    filteredItems:
-      - *ref_4
-      - *ref_5
-      - *ref_6
   - name: Useful Resources
     icon: booklogr-light.png
     displayData:
@@ -141,55 +91,55 @@ sections:
       collapsed: false
       hideForGuests: false
     items:
-      - &ref_7
+      - &ref_2
         title: Hunt Handbook
         description: The Holy Bible of Hunt Documentation
         icon: mkdocs.png
-        url: https://mkdocs.test.local
+        url: https://mkdocs.<BASE_DOMAIN>
         target: newtab
         id: 0_1615_hunthandbook
-      - &ref_8
+      - &ref_3
         title: ChatGPT
         description: If you don't use it, get with the times
         icon: chatgpt.png
         url: https://chatgpt.com
         target: newtab
         id: 1_1615_chatgpt
-      - &ref_9
+      - &ref_4
         title: CyberChef
         description: The Cyber Swiss Army Knife
         icon: cyberchef.png
-        url: https://cyberchef.test.local
+        url: https://cyberchef.<BASE_DOMAIN>
         target: newtab
         id: 2_1615_cyberchef
-      - &ref_10
+      - &ref_5
         title: CA Certificate
         description: Download this and add to browser certificates. Trust
         icon: lets-encrypt.png
-        url: https://gostatic.test.local/ca.crt
+        url: https://gostatic.<BASE_DOMAIN>/ca.crt
         target: newtab
         id: 3_1615_cacertificate
-      - &ref_11
+      - &ref_6
         title: Vault Warden
         description: Prison to all passwords, keeper of secrets
         icon: vaultwarden-light.png
-        url: https://vaultwarden.test.local
+        url: https://vaultwarden.<BASE_DOMAIN>
         target: newtab
         id: 4_1615_vaultwarden
-      - &ref_12
+      - &ref_7
         title: Self-Service PW
         description: Change your default password you simpleton
         icon: ssp.png
-        url: https://ssp.test.local
+        url: https://ssp.<BASE_DOMAIN>
         target: newtab
         id: 5_1615_selfservicepw
     filteredItems:
+      - *ref_2
+      - *ref_3
+      - *ref_4
+      - *ref_5
+      - *ref_6
       - *ref_7
-      - *ref_8
-      - *ref_9
-      - *ref_10
-      - *ref_11
-      - *ref_12
   - name: Administration
     icon: it-tools-light.png
     displayData:
@@ -199,68 +149,20 @@ sections:
       collapsed: false
       hideForGuests: false
     items:
-      - &ref_13
+      - &ref_8
         title: PiHole
         description: DNS Server/Sinkhole. Where queries go to die
         icon: pi-hole.png
-        url: https://pihole.test.local/admin
+        url: https://pihole.<BASE_DOMAIN>/admin
         target: newtab
         id: 0_1478_pihole
-      - &ref_14
-        title: VCSA
-        description: Master to all ESXi Hosts. They fear him!
-        icon: vmware-vcenter.png
-        url: https://vcsa.test.local
-        target: newtab
-        id: 1_1478_vcsa
-      - &ref_15
-        title: Deployment Server
-        description: The big boss to all Splunks
-        icon: splunk.png
-        url: https://splunkds.test.local
-        target: newtab
-        id: 2_1478_deploymentserver
-      - &ref_16
-        title: Palo Alto
-        description: Stop the bad guys from entering
-        icon: palo-alto.png
-        url: https://firewall.test.local
-        target: newtab
-        id: 3_1478_paloalto
-      - &ref_17
-        title: ESXi Stack 1
-        description: It costs too much now
-        icon: vmware-esxi.png
-        url: https://esxi1.test.local
-        target: newtab
-        id: 4_1478_esxistack
-      - &ref_18
-        title: ESXi Stack 2
-        description: Dang, thats a lot of money
-        icon: vmware-esxi.png
-        url: https://esxi2.test.local
-        target: newtab
-        id: 5_1478_esxistack
-      - &ref_19
-        title: ESXi Stack 3
-        description: $$$$$$$$
-        icon: vmware-esxi.png
-        url: https://esxi3.test.local
-        target: newtab
-        id: 6_1478_esxistack
-      - &ref_20
+      - &ref_9
         title: LDAP Admin
         description: Delete your coworkers user account
         icon: phpldapadmin.png
-        url: https://ldapadmin.test.local
+        url: https://ldapadmin.<BASE_DOMAIN>
         target: newtab
-        id: 7_1478_ldapadmin
+        id: 1_1478_ldapadmin
     filteredItems:
-      - *ref_13
-      - *ref_14
-      - *ref_15
-      - *ref_16
-      - *ref_17
-      - *ref_18
-      - *ref_19
-      - *ref_20
+      - *ref_8
+      - *ref_9
