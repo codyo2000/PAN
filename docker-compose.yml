@@ -306,6 +306,16 @@ services:
     depends_on:
       - openldap
 
+########################### Self Service Password #################################
+
+  self-service-password:
+    image: engelhardtm/docker-self-service-password:latest
+    container_name: selfservicepassword
+    restart: unless-stopped
+    depends_on:
+      - openldap
+    volumes:
+      - ./data/ssp/config.inc.php:/var/www/html/conf/config.inc.php
 
 volumes:
   iris-downloads:

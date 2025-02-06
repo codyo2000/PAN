@@ -8,3 +8,4 @@
 <IP_ADDR> vaultwarden.<BASE_DOMAIN>
 <IP_ADDR> ldapadmin.<BASE_DOMAIN>
 <IP_ADDR> ldap.<BASE_DOMAIN>
+<IP_ADDR> ssp.<BASE_DOMAIN>

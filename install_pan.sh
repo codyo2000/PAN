@@ -1,4 +1,5 @@
 #!/bin/bash
+clear
 
 ## Welcome message
 echo -e "\e[1;36m"
@@ -32,7 +33,7 @@ read -p "Press Enter to begin the chaos..."
 
 ## Variables
 ip_addr=$(hostname -I | awk '{print $1}')
-services=("ldap" "ldapadmin" "vaultwarden" "iris" "pihole" "mattermost" "pan" "cyberchef" "gostatic" "mkdocs")
+services=("ssp" "ldap" "ldapadmin" "vaultwarden" "iris" "pihole" "mattermost" "pan" "cyberchef" "gostatic" "mkdocs")
 base_domain=""
 #username=""
 #password=""
@@ -131,6 +132,8 @@ sed -i "s/<BASE_DOMAIN>/$base_domain/g" ./data/env.tmp
 sed -i "s|<LDAP_PW>|$(printf '%q' "$ldap_password")|g" ./data/env.tmp
 sed -i "s|<LDAP_RO_PW>|$(printf '%q' "$ldap_ro_password")|g" ./data/env.tmp
 sed -i "s|<LDAP_BASE_DN>|$(printf '%q' "$ldap_base_dn")|g" ./data/env.tmp
+sed -i "s|<LDAP_PW>|$(printf '%q' "$ldap_password")|g" ./data/ssp/config.inc.php
+sed -i "s|<LDAP_BASE_DN>|$(printf '%q' "$ldap_base_dn")|g" ./data/ssp/config.inc.php
 sed -i "s|<SALT1>|$(printf '%q' "$salt1")|g" ./data/env.tmp
 sed -i "s|<SALT2>|$(printf '%q' "$salt2")|g" ./data/env.tmp
 sed -i "s|<SALT3>|$(printf '%q' "$salt3")|g" ./data/env.tmp
