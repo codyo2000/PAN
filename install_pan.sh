@@ -66,7 +66,7 @@ prompt_for_domain
 
 ## Define Variables
 ip_addr=$(hostname -I | awk '{print $1}')
-services=("ssp" "ldap" "ldapadmin" "vaultwarden" "iris" "pihole" "mattermost" "pan" "cyberchef" "gostatic" "mkdocs")
+services=("ssp" "ldap" "ldapadmin" "vaultwarden" "iris" "pihole" "mattermost" "pan" "cyberchef" "gostatic")
 ldap_password=$(openssl rand -base64 20 | tr -d '\n')
 ldap_ro_password=$(openssl rand -base64 20 | tr -d '\n')
 salt1=$(openssl rand -base64 64 | tr -d '\n')

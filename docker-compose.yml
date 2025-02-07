@@ -223,16 +223,6 @@ services:
     volumes:
       - './data/gostatic:/srv/http'
 
-######################### MkDocs #############################
-
-  mkdocs:
-    image: squidfunk/mkdocs-material
-    container_name: mkdocs
-    restart: unless-stopped
-    volumes:
-      - ./data/mkdocs:/docs
-      - ./data/mkdocs/mkdocs.yml:/docs/mkdocs.yml
-
 ####################### Vault Warden #########################
 
   vaultwarden:
