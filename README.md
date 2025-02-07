@@ -12,16 +12,16 @@ One container to rule them all, deploy them all, and defend them all.
 - 🐳 Because Docker makes everything easier (most of the time).  
 
 ### 🛠 Getting Started  
-1. Clone the repository  
+1. Clone the repository:
    ```sh
    git clone https://github.com/codyo2000/pan.git
    cd pan
    ```
-2. Make the install script executable
+2. Make the install script executable:
    ```sh
    chmod +x install_pan.sh
    ```
-3. Run the install script with your base domain as an option
+3. Run the install script with your base domain as an option:
    ```sh
    ./install_pan.sh -d <BASE_DOMAIN>
    ```
