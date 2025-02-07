@@ -40,7 +40,6 @@ services:
       - pan
       - mattermost
       - nginx
-      - mkdocs
       - vaultwarden
       - gostatic
       - cyberchef
