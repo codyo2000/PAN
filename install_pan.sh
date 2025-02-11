@@ -64,11 +64,34 @@ done
 ## If no domain is provided via -d, prompt the user
 prompt_for_domain
 
+## Function to create randomly generated passwords
+generate_password() {
+    local password
+    while true; do
+        password=$(tr -dc 'A-Za-z0-9!@#$' < /dev/urandom | fold -w 20 | head -n 1)
+
+        # Ensure password meets requirements: at least one uppercase, one digit, one symbol
+        if [[ "$password" =~ [A-Z] && "$password" =~ [0-9] && "$password" =~ [!@#$] ]]; then
+            echo "$password"
+            return
+        fi
+    done
+}
+
+## Generate random password for Pi-hole
+pihole_pw=$(generate_password)
+
+## Generate PAN landing page password and hash it
+pan_pw=$(generate_password)
+pw_hash=$(echo -n "$pan_pw" | sha256sum | awk '{print $1}')
+
+## Generate LDAP Passwords
+ldap_password=$(generate_password)
+ldap_ro_password=$(generate_password)
+
 ## Define Variables
 ip_addr=$(hostname -I | awk '{print $1}')
 services=("ssp" "ldap" "ldapadmin" "vaultwarden" "iris" "pihole" "mattermost" "pan" "cyberchef" "gostatic")
-ldap_password=$(openssl rand -base64 20 | tr -d '\n')
-ldap_ro_password=$(openssl rand -base64 20 | tr -d '\n')
 salt1=$(openssl rand -base64 64 | tr -d '\n')
 salt2=$(openssl rand -base64 64 | tr -d '\n')
 salt3=$(openssl rand -base64 64 | tr -d '\n')
@@ -105,6 +128,8 @@ sudo chown -R 2000:2000 ./volumes/app/mattermost >/dev/null 2>&1 &
 sed -i "s/<BASE_DOMAIN>/$base_domain/g" ./data/pan/pan_config.yml &
 sed -i "s/<BASE_DOMAIN>/$base_domain/g" ./data/proxy/default.conf &
 sed -i "s/<BASE_DOMAIN>/$base_domain/g" ./data/env.tmp &
+sed -i "s/<BASE_DOMAIN>/$base_domain/g" ./scripts/issue_certificate.sh &
+sed -i "s/<PW_HASH>/$pw_hash/g" ./data/pan/pan_config.yml &
 sed -i "s|<LDAP_PW>|$(printf '%q' "$ldap_password")|g" ./data/env.tmp &
 sed -i "s|<LDAP_RO_PW>|$(printf '%q' "$ldap_ro_password")|g" ./data/env.tmp &
 sed -i "s|<LDAP_BASE_DN>|$(printf '%q' "$ldap_base_dn")|g" ./data/env.tmp &
@@ -192,9 +217,7 @@ echo "Done"
 clear
 
 ## Change the PiHole web gui password
-echo "Changing PiHole Credentials"
-echo -e "\n--------------------------------\n"
-sudo docker exec -it pihole pihole -a -p
+sudo docker exec -it pihole pihole -a -p "$pihole_pw"
 
 ## Echo default passwords to user
 iris_password=$(docker-compose logs app | grep "Administrator password:" | sed -E 's/.*Administrator password: ([^ ]*).*/\1/')
@@ -212,7 +235,14 @@ echo -e "${YELLOW}Password:${NC} $ldap_password\n"
 
 echo -e "${CYAN}LDAP Read Only Credentials${NC}"
 echo -e "${YELLOW}Username:${NC} cn=readonly,$ldap_base_dn"
-echo -e "${YELLOW}Password:${NC} $ldap_ro_password"
+echo -e "${YELLOW}Password:${NC} $ldap_ro_password\n"
+
+echo -e "${CYAN}PAN Landing Page Credentials${NC}"
+echo -e "${YELLOW}Username:${NC} admin"
+echo -e "${YELLOW}Password:${NC} $pan_pw\n"
+
+echo -e "${CYAN}PiHole Credentials${NC}"
+echo -e "${YELLOW}Password:${NC} $pihole_pw"
 echo -e "\n--------------------------------\n"
 
 ## Erase passwords from .env file

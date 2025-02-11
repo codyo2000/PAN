@@ -35,8 +35,11 @@ appConfig:
     hideSettings: false
     hideFooter: false
   auth:
-    enableGuestAccess: false
-    users: []
+    enableGuestAccess: true
+    users:
+    - user: admin
+      hash: <PW_HASH>
+      type: admin
     enableOidc: false
     oidc: {}
     enableHeaderAuth: false
@@ -92,34 +95,41 @@ sections:
       hideForGuests: false
     items:
       - &ref_2
+        title: Hunt Handbook
+        description: The Holy Bible of Hunt Documentation
+        icon: mkdocs.png
+        url: https://mkdocs.<BASE_DOMAIN>
+        target: newtab
+        id: 0_1615_hunthandbook
+      - &ref_3
         title: ChatGPT
         description: If you don't use it, get with the times
         icon: chatgpt.png
         url: https://chatgpt.com
         target: newtab
         id: 1_1615_chatgpt
-      - &ref_3
+      - &ref_4
         title: CyberChef
         description: The Cyber Swiss Army Knife
         icon: cyberchef.png
         url: https://cyberchef.<BASE_DOMAIN>
         target: newtab
         id: 2_1615_cyberchef
-      - &ref_4
+      - &ref_5
         title: CA Certificate
         description: Download this and add to browser certificates. Trust
         icon: lets-encrypt.png
         url: https://gostatic.<BASE_DOMAIN>/ca.crt
         target: newtab
         id: 3_1615_cacertificate
-      - &ref_5
+      - &ref_6
         title: Vault Warden
         description: Prison to all passwords, keeper of secrets
         icon: vaultwarden-light.png
         url: https://vaultwarden.<BASE_DOMAIN>
         target: newtab
         id: 4_1615_vaultwarden
-      - &ref_6
+      - &ref_7
         title: Self-Service PW
         description: Change your default password you simpleton
         icon: ssp.png
@@ -132,6 +142,7 @@ sections:
       - *ref_4
       - *ref_5
       - *ref_6
+      - *ref_7
   - name: Administration
     icon: it-tools-light.png
     displayData:
@@ -139,7 +150,7 @@ sections:
       rows: 1
       cols: 1
       collapsed: false
-      hideForGuests: false
+      hideForGuests: true
     items:
       - &ref_8
         title: PiHole

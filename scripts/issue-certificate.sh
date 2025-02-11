@@ -1,76 +1,54 @@
 #!/bin/bash
 
-usage() {
-  cat <<EOF
-Usage: $0 [-h] <-d DOMAIN> <-o PATH>
+# Prompt user for input
+read -p "Enter service name: " service
+read -p "Enter Base Domain: " base_domain
+read -p "Enter IP address: " ip_addr
+read -p "Enter port number: " port
 
-Options
-  -h Print this help
-  -o Output path (e.g. \${PWD}/certs)
-  -d Domain certificate is issued for (e.g. mm.example.com)
+# Define the file to modify
+pan_config="../data/proxy/default.conf"
+pihole_config="../etc-pihole/custom.list"
 
-EOF
-}
+# Append new server block to the config file
+echo "" >> "$pan_config"
+echo "#$service" >> "$pan_config"
+echo "server {" >> "$pan_config"
+echo "    listen 443 ssl;" >> "$pan_config"
+echo "    server_name $service.$base_domain;" >> "$pan_config"
+echo "" >> "$pan_config"
+echo "    ssl_certificate /etc/ssl/certs/nginx/$service.$base_domain.crt;" >> "$pan_config"
+echo "    ssl_certificate_key /etc/ssl/certs/nginx/$service.$base_domain.key;" >> "$pan_config"
+echo "" >> "$pan_config"
+echo "    location / {" >> "$pan_config"
+echo "        include /etc/nginx/includes/proxy.conf;" >> "$pan_config"
+echo "        proxy_pass http://$ip_addr:$port/;" >> "$pan_config"
+echo "        proxy_set_header Host \$host;" >> "$pan_config"
+echo "        proxy_set_header X-Real-IP \$remote_addr;" >> "$pan_config"
+echo "        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;" >> "$pan_config"
+echo "        proxy_set_header X-Forwarded-Proto \$scheme;" >> "$pan_config"
+echo "" >> "$pan_config"
+echo "        # Disable SSL verification for the Iris backend" >> "$pan_config"
+echo "        proxy_ssl_verify off;" >> "$pan_config"
+echo "" >> "$pan_config"
+echo "        # Enable WebSocket support" >> "$pan_config"
+echo "        proxy_set_header Upgrade \$http_upgrade;" >> "$pan_config"
+echo "        proxy_set_header Connection 'upgrade';" >> "$pan_config"
+echo "    }" >> "$pan_config"
+echo "}" >> "$pan_config"
 
-issue_cert_standalone() {
-  docker run -it --rm --name certbot -p 80:80 \
-    -v "${1}/etc/letsencrypt:/etc/letsencrypt" \
-    -v "${1}/lib/letsencrypt:/var/lib/letsencrypt" \
-    certbot/certbot certonly --standalone -d "${2}"
-}
+# Change directory to CA directory and generate/sign certificates
+cd ../$base_domain-CA
+echo -e "\n" | ./easyrsa gen-req "$service.$base_domain" nopass >/dev/null 2>&1
+echo -e "yes\n" | ./easyrsa sign-req server "$service.$base_domain" >/dev/null 2>&1
 
-authenticator_to_webroot() {
-  sed -i 's/standalone/webroot/' "${1}"/etc/letsencrypt/renewal/"${2}".conf
-  tee -a "${1}"/etc/letsencrypt/renewal/"${2}".conf >/dev/null <<EOF
-webroot_path = /usr/share/nginx/html,
-[[webroot_map]]
-EOF
-}
+# Move the generated certificates to the proxy directory
+cp ./pki/issued/$service.$base_domain.crt ../data/proxy/ssl
+cp ./pki/private/$service.$base_domain.key ../data/proxy/ssl
 
-# become root (keeping environment) and make script executable
-if [ $EUID != 0 ]; then
-  chmod +x "$0"
-  sudo -E ./"$0" "$@"
-  exit $?
-fi
+## Modify the PiHole custom.list file
+echo "$ip_addr $service.$base_domain" >> $pihole_config
 
-while getopts d:o:h opt; do
-  case "$opt" in
-    d)
-      domain=$OPTARG
-      ;;
-    o)
-      output=$OPTARG
-      ;;
-    h)
-      usage
-      exit 0
-      ;;
-    \?)
-      usage >&2
-      exit 64
-      ;;
-  esac
-done
-
-shift $((OPTIND - 1))
-
-if [ -z "$domain" ]; then
-  echo "-d is required" >&2
-  usage >&2
-  exit 64
-fi
-
-if [ -z "$output" ]; then
-  echo "-o is required" >&2
-  usage >&2
-  exit 64
-fi
-
-if ! which docker 1>/dev/null; then
-  echo "Can't find Docker command" >&2
-  exit 64
-fi
-
-issue_cert_standalone "${output}" "${domain}"
-authenticator_to_webroot "${output}" "${domain}"
+## Restart docker containers
+sudo docker restart proxy
+sudo docker exec -it pihole pihole restartdns reload-lists
