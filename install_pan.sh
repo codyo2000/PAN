@@ -121,27 +121,27 @@ remove_gitkeep() {
 }
 
 ## Run all tasks in the background
-remove_gitkeep . &
+remove_gitkeep .
 
-sudo chown -R 2000:2000 ./volumes/app/mattermost >/dev/null 2>&1 &
+sudo chown -R 2000:2000 ./volumes/app/mattermost >/dev/null 2>&1
 
-sed -i "s/<BASE_DOMAIN>/$base_domain/g" ./data/pan/pan_config.yml &
-sed -i "s/<BASE_DOMAIN>/$base_domain/g" ./data/proxy/default.conf &
-sed -i "s/<BASE_DOMAIN>/$base_domain/g" ./data/env.tmp &
-sed -i "s/<BASE_DOMAIN>/$base_domain/g" ./scripts/issue_certificate.sh &
-sed -i "s/<PW_HASH>/$pw_hash/g" ./data/pan/pan_config.yml &
-sed -i "s|<LDAP_PW>|$(printf '%q' "$ldap_password")|g" ./data/env.tmp &
-sed -i "s|<LDAP_RO_PW>|$(printf '%q' "$ldap_ro_password")|g" ./data/env.tmp &
-sed -i "s|<LDAP_BASE_DN>|$(printf '%q' "$ldap_base_dn")|g" ./data/env.tmp &
-sed -i "s|<LDAP_PW>|$(printf '%q' "$ldap_password")|g" ./data/ssp/config.inc.php &
-sed -i "s|<LDAP_BASE_DN>|$(printf '%q' "$ldap_base_dn")|g" ./data/ssp/config.inc.php &
-sed -i "s|<SALT1>|$(printf '%q' "$salt1")|g" ./data/env.tmp &
-sed -i "s|<SALT2>|$(printf '%q' "$salt2")|g" ./data/env.tmp &
-sed -i "s|<SALT3>|$(printf '%q' "$salt3")|g" ./data/env.tmp &
+sed -i "s/<BASE_DOMAIN>/$base_domain/g" ./data/pan/pan_config.yml
+sed -i "s/<BASE_DOMAIN>/$base_domain/g" ./data/proxy/default.conf
+sed -i "s/<BASE_DOMAIN>/$base_domain/g" ./data/env.tmp
+sed -i "s/<BASE_DOMAIN>/$base_domain/g" ./scripts/issue_certificate.sh
+sed -i "s/<PW_HASH>/$pw_hash/g" ./data/pan/pan_config.yml
+sed -i "s|<LDAP_PW>|$(printf '%q' "$ldap_password")|g" ./data/env.tmp
+sed -i "s|<LDAP_RO_PW>|$(printf '%q' "$ldap_ro_password")|g" ./data/env.tmp
+sed -i "s|<LDAP_BASE_DN>|$(printf '%q' "$ldap_base_dn")|g" ./data/env.tmp
+sed -i "s|<LDAP_PW>|$(printf '%q' "$ldap_password")|g" ./data/ssp/config.inc.php
+sed -i "s|<LDAP_BASE_DN>|$(printf '%q' "$ldap_base_dn")|g" ./data/ssp/config.inc.php
+sed -i "s|<SALT1>|$(printf '%q' "$salt1")|g" ./data/env.tmp
+sed -i "s|<SALT2>|$(printf '%q' "$salt2")|g" ./data/env.tmp
+sed -i "s|<SALT3>|$(printf '%q' "$salt3")|g" ./data/env.tmp
 
 ## Move file after all replacements are complete
 wait
-mv ./data/env.tmp ./.env >/dev/null 2>&1 &
+mv ./data/env.tmp ./.env >/dev/null 2>&1
 
 ## Wait for all background processes to finish
 wait
